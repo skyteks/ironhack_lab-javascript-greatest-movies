@@ -54,19 +54,40 @@ function orderAlphabetically(moviesArray) {
 
 // BONUS - Iteration 7: Time Format - Turn duration of the movies from hours to minutes
 function turnHoursToMinutes(moviesArray) {
-    return moviesArray.map((element) => {
-        console.log(element.duration);
-        const time = element.duration.split(' ').map((string) => {
-            //return (Number(string[0].replace('h', '')) * 60 + Number(string[1].replace("min", '')))
-            return [Number(string[0].replace('h', '')[0]), Number(string[1].replace("min", '')[0])]
-        });
-        console.log(time);
-        return;
+    return [...moviesArray].map((element) => {
+        const strings = element.duration.split(' ');
+        const time = (strings[0] ? (parseInt(strings[0]) * 60) : 0) + (strings[1] ? parseInt(strings[1]) : 0);
+        //console.log(element.duration + "\n" + time);
+        return { ...element, duration: time };
     });
 }
-console.log(turnHoursToMinutes(movies));
+const arr = turnHoursToMinutes(movies);
+console.log(arr);
+arr.forEach((e) => console.log(e.duration));
 
 // BONUS - Iteration 8: Best yearly score average - Best yearly score average
 function bestYearAvg(moviesArray) {
-
+    if (moviesArray.length === 0) {
+        return null;
+    }
+    const sorted = [...moviesArray].sort((a, b) =>
+        a.year - b.year
+    );
+    let currentYear;
+    let currentAvg;
+    let currentCount;
+    const years = [];
+    sorted.forEach((element) => {
+        if (element.year != currentYear) {
+            currentYear = element.year;
+            currentAvg = 0;
+            currentCount = 0;
+        }
+        currentAvg += element.score;
+        currentCount++;
+        years.push({ year: currentYear, avgScore: (currentAvg / currentCount) });
+    });
+    return years.sort((a, b) =>
+        a.year - b.year
+    ).shift().year;
 }
